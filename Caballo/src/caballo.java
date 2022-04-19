@@ -4,16 +4,21 @@ import java.util.Stack;
 public class caballo {
     int current_positionx;
     int current_positiony;
-    ArrayList<Stack> all_movements=new ArrayList<Stack>();
+    Stack<String>[] movepiles;
     String current_cordinate;
+    int movements;
 
-    caballo(int current_positionx,int current_positiony){
-        this.current_positiony=current_positiony;
-        this.current_positionx=current_positionx;
-        this.current_cordinate=cordinates.toCordinates(this.current_positionx,this.current_positiony);
-        Stack startingstack=new Stack();
-        startingstack.push(this.current_cordinate);
-        all_movements.add(startingstack);
+    caballo(String position, int movements){
+        this.current_positiony=cordinates.toy(position);
+        this.current_positionx=cordinates.tox(position);
+        this.movepiles=new Stack[movements];
+        this.movements=movements;
+        for (int i = 0; i < movepiles.length; i++) {
+            this.movepiles[i]=new Stack<String>();
+        }
+        for (int i = 0; i<possible_moves(this.current_cordinate).length ; i++) {
+            this.movepiles[0].push(possible_moves(this.current_cordinate)[i]);
+        }
     }
 
     public String[] possible_moves(String position){
@@ -46,22 +51,26 @@ public class caballo {
         }
         return actual_possible_moves;}
 
-    public void movepieceto(String boardplace){
-        this.current_positionx=cordinates.tox(boardplace);
-        this.current_positiony=cordinates.toy(boardplace);
-        this.current_cordinate=cordinates.toCordinates(this.current_positionx,this.current_positiony);
+    public void fillpiles(){ //rellena cualquier pila que encunetre vacia, con los momvimientos possibles del tope de la anterior.
+        for (int i = 1; i < this.movepiles.length; i++) {
+            if (this.movepiles[i].empty()){
+                String corrdinates=this.movepiles[i-1].peek();
+                for (int j = 0; j < possible_moves(corrdinates).length; j++) {
+                    this.movepiles[i].push(possible_moves(corrdinates)[j]);
+                }
+            }
+        }
     }
 
-    public void move(){
-        for (int i = 0; i <all_movements.size() ; i++) {
-
-        }
-
-        }
-
-    public void showall_movements(){
-        for (int i = 0; i <all_movements.size() ; i++) {
-            System.out.println(all_movements.get(i));
+    public void aaaaa(){
+        while (!this.movepiles[0].empty()){  //hay que hacerlo recursivo, utilizar un marker/counter.
+            for (int i = movepiles.length-1; i>this.movepiles.length ; i--) {
+                System.out.print(this.movepiles[i].peek());
+            }
+            if(!this.movepiles[this.movements-1].empty()){
+               this.movepiles[this.movements-1].pop();
+               aaaaa();
+            }
         }
     }
 
